@@ -1,8 +1,26 @@
 //! Box CAD's core: the document model and all cut geometry.
 //!
 //! This crate has no UI dependency. The app and the command-line tool both call
-//! it, and the interface never computes geometry of its own. Every length is in
-//! millimeters; inches exist only as a display setting.
+//! it, and the interface never computes geometry of its own.
+//!
+//! Conventions, everywhere in the core:
+//! - Lengths are millimeters. Inches exist only as a display setting.
+//! - Angles are degrees, counter-clockwise.
+//! - Space is right-handed with Z up. The ground is the XY plane.
+
+pub mod edit;
+pub mod file;
+pub mod history;
+pub mod id;
+pub mod model;
+
+pub use edit::{Edit, EditError, Item, ItemId};
+pub use history::History;
+pub use id::{EntityId, MaterialId, PanelId, ParameterId, SketchId};
+pub use model::{
+    DisplayUnits, Document, Entity, Grain, Material, ModelError, Panel, Parameter, ParameterUnit,
+    Plane, Shape, SheetSize, Sketch, ThicknessSide,
+};
 
 /// The core library's version, which follows the app's.
 pub fn version() -> &'static str {

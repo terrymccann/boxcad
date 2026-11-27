@@ -6,3 +6,7 @@ edition.workspace = true
 publish.workspace = true
 
 [dependencies]
+serde = { version = "1", features = ["derive"] }
+# float_roundtrip: a number read back from a project file is bit-for-bit the one saved.
+serde_json = { version = "1", features = ["float_roundtrip"] }
+thiserror = "2"
