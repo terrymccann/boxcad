@@ -2,10 +2,7 @@
 //! tested and swept without the app. Subcommands arrive with the features they
 //! exercise.
 
-use boxcad_core::{
-    Document, Edit, EntityId, Grain, History, Item, Material, MaterialId, Panel, PanelId, Plane,
-    SheetSize, Sketch, SketchId, ThicknessSide, file,
-};
+use boxcad_core::file;
 use clap::{Parser, Subcommand};
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
@@ -67,37 +64,8 @@ fn main() -> ExitCode {
 
 type Outcome = Result<(), Box<dyn std::error::Error>>;
 
-/// Build a one-panel design the way the app will, through edits, and save it.
 fn sample(path: &Path, width: f64, depth: f64, thickness: f64, kerf: f64) -> Outcome {
-    let mut history = History::new(Document::new("Sample panel"));
-
-    let material = Material {
-        id: MaterialId(history.allocate_id()),
-        name: "Birch ply".into(),
-        thickness,
-        kerf,
-        sheet: SheetSize { width: 600.0, height: 400.0 },
-        grain: Grain::None,
-    };
-    let material_id = material.id;
-    history.apply("Add material", Edit::add(Item::Material(material)))?;
-
-    let sketch_id = SketchId(history.allocate_id());
-    let sides = std::array::from_fn(|_| EntityId(history.allocate_id()));
-    let outline =
-        Sketch::rectangle(sketch_id, "Panel outline", Plane::ground(), [0.0, 0.0], width, depth, sides);
-    let panel = Panel {
-        id: PanelId(history.allocate_id()),
-        name: "Panel".into(),
-        sketch: sketch_id,
-        material: material_id,
-        thickness_side: ThicknessSide::Positive,
-    };
-    history.apply(
-        "Draw panel",
-        Edit::Group(vec![Edit::add(Item::Sketch(outline)), Edit::add(Item::Panel(panel))]),
-    )?;
-
+    let history = boxcad_core::sample::one_panel(width, depth, thickness, kerf)?;
     file::save(path, history.document())?;
     println!("Wrote {}", path.display());
     Ok(())
@@ -119,10 +87,22 @@ fn info(path: &Path) -> Outcome {
         println!("    {}: {} entities", s.name, s.entities.len());
     }
     println!("  panels: {}", doc.panels.len());
+    let scene = boxcad_core::scene(&doc);
     for p in &doc.panels {
         let material = doc.material(p.material).map_or("?", |m| m.name.as_str());
         let sketch = doc.sketch(p.sketch).map_or("?", |s| s.name.as_str());
         println!("    {}: outline \"{}\", material \"{}\"", p.name, sketch, material);
+        if let Some(view) = scene.panels.iter().find(|v| v.id == p.id) {
+            match &view.problem {
+                Some(problem) => println!("      cannot be drawn: {problem}"),
+                None => println!(
+                    "      {} corner points, {} holes, {} mm thick",
+                    view.outline.len(),
+                    view.holes.len(),
+                    view.thickness
+                ),
+            }
+        }
     }
     println!("  parameters: {}", doc.parameters.len());
     for p in &doc.parameters {

@@ -1,12 +1,21 @@
 /* Color tokens from the approved mockups. The theme follows the system for now;
-   a switch in the app comes with the floating interface. */
+   a switch in the app comes with the floating interface. The 3D view reads the
+   same tokens, so a color is only ever written here. */
 :root {
   --work-area: #f2f4f6;
+  --grid-minor: #c6ccd4;
+  --grid-major: #a7afba;
   --surface: #ffffff;
   --text: #1d232a;
   --text-secondary: #5b6573;
   --hairline: #dadee3;
   --accent: #2563c9;
+  --active-bg: #e8f0fc;
+  --active-text: #1b4a99;
+  --wood: #ecd2a6;
+  --wood-edge: #8f6f45;
+  --ground-shadow: 0.16;
+  --float-shadow: 0 6px 24px rgba(29, 35, 42, 0.14);
   font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 13px;
   line-height: 1.35;
@@ -15,10 +24,16 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --work-area: #15181c;
+    --grid-minor: #272c33;
+    --grid-major: #414a54;
     --surface: #1d2126;
     --text: #e7eaee;
     --text-secondary: #98a2ae;
     --hairline: #3a424b;
+    --active-bg: #1f3558;
+    --active-text: #9cc0f7;
+    --ground-shadow: 0.45;
+    --float-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -36,18 +51,107 @@ body {
   -webkit-user-select: none;
 }
 
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
 .workspace {
   position: fixed;
   inset: 0;
 }
 
-/* Placeholder that proves the shell reaches the core. The viewport replaces it. */
-.shell-note {
+.viewport {
   position: absolute;
-  left: 0;
-  right: 0;
+  inset: 0;
+  /* The view handles every gesture itself: no page scroll, zoom or text selection. */
+  touch-action: none;
+}
+
+.viewport canvas {
+  display: block;
+  outline: none;
+}
+
+/* Problems the user needs to know about, until the parts list can show them. */
+.notice {
+  position: absolute;
+  left: 50%;
   bottom: 16px;
+  transform: translateX(-50%);
   margin: 0;
-  text-align: center;
+  padding: 8px 14px;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--float-shadow);
+  color: var(--text);
+}
+
+/* View cube: shows which way the model faces. Each face is a button that turns
+   the view to look at that side. */
+.view-cube {
+  position: absolute;
+  top: 72px;
+  right: 16px;
+  width: 104px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.view-cube-stage {
+  position: relative;
+  width: 104px;
+  height: 104px;
+}
+
+.view-cube-face {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  padding: 0;
+  box-sizing: border-box;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: var(--surface);
   color: var(--text-secondary);
+  font-size: 11.5px;
+  font-weight: 600;
+  transform-origin: 50% 50%;
+}
+
+.view-cube-face:active {
+  background: var(--active-bg);
+  color: var(--active-text);
+}
+
+.view-cube-face:focus-visible,
+.view-cube-home:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.view-cube-home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 72px;
+  height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--float-shadow);
+  color: var(--text);
+}
+
+.view-cube-home:active {
+  background: var(--active-bg);
+  color: var(--active-text);
 }
