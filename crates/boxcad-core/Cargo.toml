@@ -1,0 +1,8 @@
+[package]
+name = "boxcad-core"
+description = "Box CAD's document model and geometry. No UI dependency."
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[dependencies]

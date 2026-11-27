@@ -1,0 +1,12 @@
+[workspace]
+resolver = "3"
+members = ["crates/boxcad-core", "crates/boxcad-cli", "src-tauri"]
+
+# scripts/bump.sh keeps this in step with package.json.
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[profile.release]
+lto = "thin"

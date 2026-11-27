@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+      # The Tauri shell is left out: it needs a desktop toolkit the runner lacks.
+      - name: Core and command-line tests
+        run: cargo test -p boxcad-core -p boxcad-cli
+      - run: npm ci
+      - name: Type-check and build the interface
+        run: npm run build

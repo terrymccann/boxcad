@@ -1,0 +1,17 @@
+[package]
+name = "boxcad"
+description = "Design laser-cut boxes from flat panels"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[lib]
+name = "boxcad_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+boxcad-core = { path = "../crates/boxcad-core" }
+tauri = { version = "2", features = [] }

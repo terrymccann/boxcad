@@ -1,0 +1,53 @@
+/* Color tokens from the approved mockups. The theme follows the system for now;
+   a switch in the app comes with the floating interface. */
+:root {
+  --work-area: #f2f4f6;
+  --surface: #ffffff;
+  --text: #1d232a;
+  --text-secondary: #5b6573;
+  --hairline: #dadee3;
+  --accent: #2563c9;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --work-area: #15181c;
+    --surface: #1d2126;
+    --text: #e7eaee;
+    --text-secondary: #98a2ae;
+    --hairline: #3a424b;
+  }
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--work-area);
+  color: var(--text);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.workspace {
+  position: fixed;
+  inset: 0;
+}
+
+/* Placeholder that proves the shell reaches the core. The viewport replaces it. */
+.shell-note {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  margin: 0;
+  text-align: center;
+  color: var(--text-secondary);
+}
