@@ -1,0 +1,106 @@
+{
+  "format": "boxcad-project",
+  "version": 1,
+  "app_version": "0.1.0",
+  "document": {
+    "name": "Sample panel",
+    "display_units": "mm",
+    "materials": [
+      {
+        "id": 1,
+        "name": "Birch ply",
+        "thickness": 3.0,
+        "kerf": 0.15,
+        "sheet": {
+          "width": 600.0,
+          "height": 400.0
+        },
+        "grain": "none"
+      }
+    ],
+    "sketches": [
+      {
+        "id": 2,
+        "name": "Panel outline",
+        "plane": {
+          "origin": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "x_axis": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "y_axis": [
+            0.0,
+            1.0,
+            0.0
+          ]
+        },
+        "entities": [
+          {
+            "id": 3,
+            "type": "line",
+            "from": [
+              0.0,
+              0.0
+            ],
+            "to": [
+              200.0,
+              0.0
+            ]
+          },
+          {
+            "id": 4,
+            "type": "line",
+            "from": [
+              200.0,
+              0.0
+            ],
+            "to": [
+              200.0,
+              120.0
+            ]
+          },
+          {
+            "id": 5,
+            "type": "line",
+            "from": [
+              200.0,
+              120.0
+            ],
+            "to": [
+              0.0,
+              120.0
+            ]
+          },
+          {
+            "id": 6,
+            "type": "line",
+            "from": [
+              0.0,
+              120.0
+            ],
+            "to": [
+              0.0,
+              0.0
+            ]
+          }
+        ]
+      }
+    ],
+    "panels": [
+      {
+        "id": 7,
+        "name": "Panel",
+        "sketch": 2,
+        "material": 1,
+        "thickness_side": "positive"
+      }
+    ],
+    "parameters": [],
+    "next_id": 8
+  }
+}

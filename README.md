@@ -27,6 +27,15 @@ cargo test -p boxcad-core -p boxcad-cli
 npm run build
 ```
 
+## Command-line tool
+
+```
+cargo run -p boxcad-cli -- sample panel.boxcad    # write a one-panel project
+cargo run -p boxcad-cli -- info panel.boxcad      # open it, check it, list its contents
+```
+
+A project is a `.boxcad` file: versioned JSON that describes the design.
+
 ## Version
 
 `package.json` holds the version. Change it with `scripts/bump.sh 0.2.0`, which
