@@ -15,8 +15,17 @@
   --wood: #ecd2a6;
   --wood-edge: #8f6f45;
   --ground-shadow: 0.16;
+  --label: #4d5764;
+  --disabled: #98a2ae;
+  --track: #eef0f2;
+  --track-selected: #ffffff;
+  --ok-bg: #e9f5ec;
+  --ok-text: #1e5a33;
+  --problem-bg: #fdecec;
+  --problem-text: #8c1c1c;
   --float-shadow: 0 6px 24px rgba(29, 35, 42, 0.14);
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --pill-shadow: 0 4px 18px rgba(29, 35, 42, 0.12);
+  font-family: "Inter Variable", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 13px;
   line-height: 1.35;
 }
@@ -33,7 +42,16 @@
     --active-bg: #1f3558;
     --active-text: #9cc0f7;
     --ground-shadow: 0.45;
+    --label: #aab3be;
+    --disabled: #5b6573;
+    --track: #101215;
+    --track-selected: #3a424b;
+    --ok-bg: #173322;
+    --ok-text: #8fd6a6;
+    --problem-bg: #3b1d1d;
+    --problem-text: #f2a9a9;
     --float-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+    --pill-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -57,6 +75,25 @@ button {
   cursor: pointer;
 }
 
+button:disabled {
+  color: var(--disabled);
+  cursor: default;
+}
+
+input {
+  font: inherit;
+  color: inherit;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
 .workspace {
   position: fixed;
   inset: 0;
@@ -78,7 +115,7 @@ button {
 .notice {
   position: absolute;
   left: 50%;
-  bottom: 16px;
+  bottom: 68px;
   transform: translateX(-50%);
   margin: 0;
   padding: 8px 14px;
@@ -154,4 +191,338 @@ button {
 .view-cube-home:active {
   background: var(--active-bg);
   color: var(--active-text);
+}
+
+/* ---- Floating pieces ---------------------------------------------------- */
+
+.surface,
+.toolbar {
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--float-shadow);
+}
+
+.floating {
+  position: absolute;
+}
+
+/* The grip: a small bar that shows a piece can be dragged. Its touch area is
+   much larger than the bar itself. */
+.grip {
+  display: grid;
+  place-items: center;
+  height: 14px;
+  margin: -5px -5px -3px;
+  padding-top: 2px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.grip span {
+  width: 28px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--hairline);
+}
+
+.dragging,
+.dragging .grip {
+  cursor: grabbing;
+}
+
+/* ---- Tool bar ----------------------------------------------------------- */
+
+.toolbar {
+  padding: 5px;
+}
+
+.toolbar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tool {
+  min-width: 60px;
+  height: 50px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.tool:not(:disabled):active {
+  background: var(--active-bg);
+}
+
+/* The open group is tinted; the tool in use is solid accent. */
+.tool[aria-expanded="true"] {
+  background: var(--active-bg);
+  color: var(--active-text);
+  font-weight: 600;
+}
+
+.tool[aria-pressed="true"] {
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.flyout {
+  position: absolute;
+  left: calc(100% + 10px);
+  display: flex;
+  gap: 2px;
+  padding: 5px;
+}
+
+.flyout.to-left {
+  left: auto;
+  right: calc(100% + 10px);
+}
+
+/* ---- Pills -------------------------------------------------------------- */
+
+.pill {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  background: var(--surface);
+  box-shadow: var(--pill-shadow);
+}
+
+.project-pill {
+  top: 12px;
+  left: 12px;
+  gap: 8px;
+  height: 44px;
+  padding: 0 14px 0 10px;
+  border-radius: 22px;
+}
+
+.project-name {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.project-state {
+  color: var(--text-secondary);
+}
+
+.action-pill {
+  top: 12px;
+  right: 12px;
+  padding: 0 4px;
+  border-radius: 22px;
+}
+
+.action {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 22px;
+  background: transparent;
+  display: grid;
+  place-items: center;
+}
+
+.action:not(:disabled):active,
+.action[aria-pressed="true"] {
+  background: var(--active-bg);
+  color: var(--active-text);
+}
+
+.export {
+  height: 34px;
+  margin: 0 1px 0 4px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 17px;
+  background: var(--accent);
+  color: #ffffff;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.export:disabled {
+  color: #ffffff;
+  opacity: 0.4;
+}
+
+.readout-pill {
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  gap: 16px;
+  min-height: 44px;
+  padding: 0 6px 0 16px;
+  border-radius: 22px;
+  white-space: nowrap;
+}
+
+.readout-pill > span {
+  display: flex;
+  gap: 16px;
+}
+
+.readout-label {
+  color: var(--text-secondary);
+}
+
+.readout-value {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.readout-material {
+  height: 36px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+}
+
+.readout-material:active,
+.readout-material[aria-expanded="true"] {
+  background: var(--active-bg);
+}
+
+.readout-material[aria-expanded="true"] .readout-label,
+.readout-material[aria-expanded="true"] .readout-value {
+  color: var(--active-text);
+}
+
+/* ---- Cards -------------------------------------------------------------- */
+
+.card {
+  width: 244px;
+  box-sizing: border-box;
+  padding: 5px 12px 12px;
+}
+
+.card .grip {
+  margin: -5px -12px 0;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 4px;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.card-close {
+  width: 44px;
+  height: 36px;
+  margin: -6px -12px -6px 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--label);
+  display: grid;
+  place-items: center;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 44px;
+}
+
+.field-label {
+  color: var(--label);
+}
+
+.field-static {
+  font-weight: 600;
+}
+
+.field-box {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 104px;
+  height: 34px;
+  box-sizing: border-box;
+  padding: 0 9px;
+  border: 1px solid var(--hairline);
+  border-radius: 9px;
+  background: var(--surface);
+}
+
+.field-box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.field-box input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  text-align: right;
+  font-weight: 600;
+  outline: none;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.field-unit {
+  color: var(--text-secondary);
+}
+
+.segmented {
+  display: flex;
+  gap: 2px;
+  margin-top: 6px;
+  padding: 3px;
+  border-radius: 10px;
+  background: var(--track);
+}
+
+.segmented button {
+  flex: 1;
+  height: 38px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--label);
+}
+
+.segmented button[aria-pressed="true"] {
+  background: var(--track-selected);
+  color: var(--text);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(29, 35, 42, 0.15);
+}
+
+.note {
+  margin-top: 10px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  background: var(--ok-bg);
+  color: var(--ok-text);
+}
+
+.note.problem {
+  background: var(--problem-bg);
+  color: var(--problem-text);
 }

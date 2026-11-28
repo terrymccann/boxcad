@@ -96,6 +96,16 @@ impl History {
         !self.redo.is_empty()
     }
 
+    /// What the next undo would undo, such as "Draw panel".
+    pub fn next_undo(&self) -> Option<&str> {
+        self.undo.last().map(|s| s.label.as_str())
+    }
+
+    /// What the next redo would redo.
+    pub fn next_redo(&self) -> Option<&str> {
+        self.redo.last().map(|s| s.label.as_str())
+    }
+
     /// Labels of the edits that can be undone, oldest first.
     pub fn undo_labels(&self) -> impl Iterator<Item = &str> {
         self.undo.iter().map(|s| s.label.as_str())
@@ -151,8 +161,12 @@ mod tests {
         add(&mut h, "c");
         assert_eq!(h.undo_labels().collect::<Vec<_>>(), ["Add a", "Add b", "Add c"]);
 
+        assert_eq!(h.next_undo(), Some("Add c"));
+        assert_eq!(h.next_redo(), None);
         assert_eq!(h.undo().as_deref(), Some("Add c"));
+        assert_eq!(h.next_redo(), Some("Add c"));
         assert_eq!(h.undo().as_deref(), Some("Add b"));
+        assert_eq!(h.next_redo(), Some("Add b"));
         assert_eq!(names(&h), ["a"]);
         assert_eq!(h.redo_labels().collect::<Vec<_>>(), ["Add b", "Add c"]);
 
