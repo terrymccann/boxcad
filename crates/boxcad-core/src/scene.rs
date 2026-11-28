@@ -32,6 +32,8 @@ pub struct PanelView {
     pub outline: Vec<[f64; 2]>,
     /// Holes, each clockwise.
     pub holes: Vec<Vec<[f64; 2]>>,
+    /// The outline's overall width and depth, along its own x and y.
+    pub size: [f64; 2],
     /// Why the panel cannot be drawn, if it cannot. The outline is then empty.
     pub problem: Option<String>,
 }
@@ -55,6 +57,7 @@ pub fn scene(document: &Document) -> Scene {
                 Ok(o) => (o.outer, o.holes, None),
                 Err(e) => (Vec::new(), Vec::new(), Some(e.to_string())),
             };
+            let size = extent(&outer);
             Some(PanelView {
                 id: panel.id,
                 name: panel.name.clone(),
@@ -66,11 +69,21 @@ pub fn scene(document: &Document) -> Scene {
                 normal,
                 outline: outer,
                 holes,
+                size,
                 problem,
             })
         })
         .collect();
     Scene { panels }
+}
+
+/// How far a set of points spreads in x and in y.
+fn extent(points: &[[f64; 2]]) -> [f64; 2] {
+    [0, 1].map(|axis| {
+        let values = points.iter().map(|p| p[axis]);
+        let (low, high) = values.fold((f64::INFINITY, f64::NEG_INFINITY), |(lo, hi), v| (lo.min(v), hi.max(v)));
+        if high >= low { high - low } else { 0.0 }
+    })
 }
 
 #[cfg(test)]
@@ -90,6 +103,7 @@ mod tests {
             assert_eq!(p.origin, [0.0, 0.0, 0.0]);
             assert_eq!(p.normal, [0.0, 0.0, 1.0]);
             assert_eq!(p.outline, [[0.0, 0.0], [200.0, 0.0], [200.0, 120.0], [0.0, 120.0]]);
+            assert_eq!(p.size, [200.0, 120.0]);
             assert!(p.holes.is_empty() && p.problem.is_none());
         }
     }
@@ -113,6 +127,7 @@ mod tests {
         history.apply("Break outline", Edit::Replace(Item::Sketch(sketch))).unwrap();
         let p = &scene(history.document()).panels[0];
         assert!(p.outline.is_empty());
+        assert_eq!(p.size, [0.0, 0.0]);
         assert!(p.problem.as_deref().is_some_and(|m| m.contains("open outline")));
     }
 }
