@@ -13,9 +13,13 @@ pub mod file;
 pub mod history;
 pub mod id;
 pub mod model;
+pub mod outline;
+pub mod sample;
+pub mod scene;
 
 pub use edit::{Edit, EditError, Item, ItemId};
 pub use history::History;
+pub use scene::{PanelView, Scene, scene};
 pub use id::{EntityId, MaterialId, PanelId, ParameterId, SketchId};
 pub use model::{
     DisplayUnits, Document, Entity, Grain, Material, ModelError, Panel, Parameter, ParameterUnit,

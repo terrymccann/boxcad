@@ -6,5 +6,5 @@ export default defineConfig({
   root: "ui",
   clearScreen: false,
   server: { port: 5174, strictPort: true, watch: { ignored: ["**/src-tauri/**", "**/target/**"] } },
-  build: { outDir: "../dist", emptyOutDir: true, target: "es2022" },
+  build: { outDir: "../dist", emptyOutDir: true, target: "es2022", chunkSizeWarningLimit: 1000 },
 });

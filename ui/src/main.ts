@@ -1,18 +1,28 @@
-import { getVersion } from "@tauri-apps/api/app";
-import { invoke } from "@tauri-apps/api/core";
+import { loadScene } from "./api";
+import { ViewCube } from "./viewcube";
+import { Viewport } from "./viewport";
 
-// The shell is an empty work area for now. One line of text shows that the
-// interface, the Tauri shell and the core library are all connected.
-async function showVersions() {
-  const note = document.getElementById("shell-note");
-  if (!note) return;
+const workspace = document.getElementById("workspace")!;
+const viewport = new Viewport(document.getElementById("viewport")!);
+const cube = new ViewCube(workspace, (view) => viewport.lookFrom(view));
+viewport.onCameraChange((camera) => cube.update(camera));
+
+/** Tell the user about something wrong with the design. */
+function notify(message: string | null) {
+  const notice = document.getElementById("notice")!;
+  notice.textContent = message ?? "";
+  notice.hidden = !message;
+}
+
+async function start() {
   try {
-    const [app, core] = await Promise.all([getVersion(), invoke<string>("core_version")]);
-    note.textContent = `Box CAD ${app} · core ${core}`;
-  } catch {
-    // Opened in a plain browser, where there is no shell to ask.
-    note.textContent = "Box CAD (interface only, not running in the app)";
+    const scene = await loadScene();
+    viewport.show(scene, { frame: true });
+    const problems = scene.panels.filter((p) => p.problem).map((p) => `${p.name}: ${p.problem}`);
+    notify(problems.length ? problems.join(" ") : null);
+  } catch (error) {
+    notify(`Could not load the design: ${error}`);
   }
 }
 
-void showVersions();
+void start();
